@@ -1,7 +1,19 @@
 {
   "name": "block-hash-prover-template",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "artifacts/src/contracts"],
+  "scripts": {
+    "build": "hardhat compile && tsc",
+    "clean": "hardhat clean && rm -rf dist"
+  },
   "repository": "https://github.com/OffchainLabs/block-hash-prover-template/",
   "author": "Henry <11198460+godzillaba@users.noreply.github.com>",
   "license": "MIT",
