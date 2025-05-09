@@ -6,6 +6,19 @@ import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
 import hre from "hardhat";
 
+// Block height to test getTargetBlockHash
+const GET_TARGET_BLOCK_HASH_TEST_HEIGHT = 10;
+// Expected result of getTargetBlockHash
+const EXPECTED_GET_TARGET_BLOCK_HASH_RESULT = '0x1111111111111111111111111111111111111111111111111111111111111111'
+
+// Child block hash to pass to verifyTargetBlockHash
+const CHILD_BLOCK_HASH = '0x2222222222222222222222222222222222222222222222222222222222222222'
+// Expected result of verifyTargetBlockHash
+const EXPECTED_VERIFY_TARGET_BLOCK_HASH_RESULT = '0x3333333333333333333333333333333333333333333333333333333333333333'
+
+// todo: there should be some type defined by the ts module for "extra data required to generate the proof"
+// there should be a const here for that data
+
 describe("Lock", function () {
   // We define a fixture to reuse the same setup in every test.
   // We use loadFixture to run this setup once, snapshot that state,
