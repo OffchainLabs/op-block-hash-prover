@@ -1,9 +1,3 @@
-export class Foo {
-  bar: string;
-  constructor() {
-    this.bar = "bar";
-  }
-  getBar() {
-    return this.bar;
-  }
-}
+export { ChildToParentProverHelper } from './prover-helper/ChildToParentProverHelper'
+export { ParentToChildProverHelper } from './prover-helper/ParentToChildProverHelper'
+export { IProverHelper } from './prover-helper/IProverHelper'

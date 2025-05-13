@@ -8,7 +8,7 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "outDir": "./dist",
+    "outDir": "./dist"
   },
-  "include": ["src/ts/**/*.ts"],
+  "include": ["src/ts/**/*.ts"]
 }

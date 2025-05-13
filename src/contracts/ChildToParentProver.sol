@@ -10,12 +10,12 @@ contract ChildToParentProver is IBlockHashProver {
         view
         returns (bytes32 targetBlockHash)
     {
-        revert("ChildToParentProver: verifyTargetBlockHash not implemented");
+        return 0x2222222222222222222222222222222222222222222222222222222222222222;
     }
 
     /// @inheritdoc IBlockHashProver
     function getTargetBlockHash(bytes calldata input) external view returns (bytes32 targetBlockHash) {
-        revert("ChildToParentProver: getTargetBlockHash not implemented");
+        return 0x2222222222222222222222222222222222222222222222222222222222222222;
     }
 
     /// @inheritdoc IBlockHashProver
@@ -24,7 +24,7 @@ contract ChildToParentProver is IBlockHashProver {
         view
         returns (address account, uint256 slot, bytes32 value)
     {
-        revert("ChildToParentProver: verifyStorageSlot not implemented");
+        return (0x4444444444444444444444444444444444444444, 4, 0x4444444444444444444444444444444444444444444444444444444444444444);
     }
 
     /// @inheritdoc IBlockHashProver

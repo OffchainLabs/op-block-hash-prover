@@ -15,7 +15,8 @@
   ],
   "scripts": {
     "build": "hardhat compile && tsc",
-    "clean": "hardhat clean && rm -rf dist"
+    "clean": "hardhat clean && rm -rf dist",
+    "test": "hardhat test"
   },
   "repository": "https://github.com/OffchainLabs/block-hash-prover-template/",
   "author": "Henry <11198460+godzillaba@users.noreply.github.com>",
@@ -34,6 +35,7 @@
     "@types/node": ">=18.0.0",
     "broadcast-erc": "Offchainlabs/broadcast-erc",
     "chai": "^4.2.0",
+    "dotenv": "^16.5.0",
     "hardhat": "^2.24.0",
     "hardhat-gas-reporter": "^1.0.8",
     "solidity-coverage": "^0.8.0",
