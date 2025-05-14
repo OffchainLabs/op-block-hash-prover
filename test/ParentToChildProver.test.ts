@@ -16,15 +16,15 @@ import { ParentToChildProver$Type } from '../artifacts/src/contracts/ParentToChi
 // replace this with the most recent child block hash available in the parent chain's state
 // this is used to test the prover's ability to prove a block
 const MOST_RECENT_CHILD_CHAIN_BLOCK_HASH: Hash =
-  '0x1111111111111111111111111111111111111111111111111111111111111111'
+  '0x3c8f4a1b6599dfa00468e2609bb45f317ba5fa95e7ef198b03b75bebf54dd580'
 
 // replace this with a known storage slot value at the specified child chain block hash
 // for example a token account balance
 const KNOWN_STORAGE_SLOT_ACCOUNT: Address =
-  '0x3333333333333333333333333333333333333333'
-const KNOWN_STORAGE_SLOT: bigint = 3n
+  '0xC6962004f452bE9203591991D15f6b388e09E8D0'
+const KNOWN_STORAGE_SLOT: bigint = 0n
 const KNOWN_STORAGE_SLOT_VALUE: Hash =
-  '0x3333333333333333333333333333333333333333333333333333333333333333'
+  '0x0001002328232812fefcf792000000000000000000032a96d8f8d5f811f7608f'
 
 describe('ParentToChildProver', function () {
   let prover: GetContractReturnType<

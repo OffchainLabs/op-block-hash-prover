@@ -1,33 +1,45 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
+import {BaseProver} from "./BaseProver.sol";
 import {IBlockHashProver} from "broadcast-erc/contracts/standard/interfaces/IBlockHashProver.sol";
 
-contract ParentToChildProver is IBlockHashProver {
+contract ParentToChildProver is BaseProver, IBlockHashProver {
     /// @inheritdoc IBlockHashProver
     function verifyTargetBlockHash(bytes32 homeBlockHash, bytes calldata input)
         external
         view
         returns (bytes32 targetBlockHash)
     {
-        return 0x1111111111111111111111111111111111111111111111111111111111111111;
+        return 0x3c8f4a1b6599dfa00468e2609bb45f317ba5fa95e7ef198b03b75bebf54dd580;
     }
 
     /// @inheritdoc IBlockHashProver
     function getTargetBlockHash(bytes calldata input) external view returns (bytes32 targetBlockHash) {
-        return 0x1111111111111111111111111111111111111111111111111111111111111111;
+        return 0x3c8f4a1b6599dfa00468e2609bb45f317ba5fa95e7ef198b03b75bebf54dd580;
     }
 
     /// @inheritdoc IBlockHashProver
     function verifyStorageSlot(bytes32 targetBlockHash, bytes calldata input)
         external
-        view
+        pure
         returns (address account, uint256 slot, bytes32 value)
     {
-        return (
-            0x3333333333333333333333333333333333333333,
-            3,
-            0x3333333333333333333333333333333333333333333333333333333333333333
+        // decode the input
+        bytes memory rlpBlockHeader;
+        bytes memory accountProof;
+        bytes memory storageProof;
+        (rlpBlockHeader, account, slot, accountProof, storageProof) =
+            abi.decode(input, (bytes, address, uint256, bytes, bytes));
+
+        // verify proofs and get the value
+        value = _getSlotFromBlockHeader(
+            targetBlockHash,
+            rlpBlockHeader,
+            account,
+            slot,
+            accountProof,
+            storageProof
         );
     }
 

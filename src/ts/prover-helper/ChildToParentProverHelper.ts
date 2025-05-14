@@ -8,15 +8,12 @@ import {
   toRlp,
 } from 'viem'
 import { IProverHelper } from './IProverHelper'
-import { convertToRlpBlock } from './util'
+import { BaseProverHelper } from './BaseProverHelper'
 
-export class ChildToParentProverHelper implements IProverHelper {
-  constructor(
-    public readonly childToParentProverAddress: string,
-    readonly childClient: PublicClient,
-    readonly parentClient: PublicClient
-  ) {}
-
+export class ChildToParentProverHelper
+  extends BaseProverHelper
+  implements IProverHelper
+{
   // return the newest block hash that can be returned by getTargetBlockHash on the prover
   async buildInputForGetTargetBlockHash(): Promise<{
     input: Hex
@@ -44,27 +41,9 @@ export class ChildToParentProverHelper implements IProverHelper {
     account: Address,
     slot: bigint
   ): Promise<{ input: Hex; slotValue: Hash }> {
-    const block: any = await this.parentClient.transport.request({
-      method: 'eth_getBlockByHash',
-      params: [targetBlockHash, true],
-    })
-
-    if (!block) {
-      throw new Error('Block not found')
-    }
-
-    const rlpBlockHeader = convertToRlpBlock(block)
-
-    const proof = await this.parentClient.getProof({
-      address: account,
-      storageKeys: [toHex(slot, { size: 32 })],
-      blockNumber: block.number,
-    })
-
-    const slotValue = toHex(proof.storageProof[0].value, { size: 32 })
-
-    const rlpAccountProof = toRlp(proof.accountProof)
-    const rlpStorageProof = toRlp(proof.storageProof[0].proof)
+    const rlpBlockHeader = await this._getRlpBlockHeader(targetBlockHash)
+    const { rlpAccountProof, rlpStorageProof, slotValue } =
+      await this._getRlpStorageAndAccountProof(targetBlockHash, account, slot)
 
     const input = encodeAbiParameters(
       [
@@ -77,9 +56,6 @@ export class ChildToParentProverHelper implements IProverHelper {
       [rlpBlockHeader, account, slot, rlpAccountProof, rlpStorageProof]
     )
 
-    return {
-      input,
-      slotValue,
-    }
+    return { input, slotValue }
   }
 }
