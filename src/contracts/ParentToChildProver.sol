@@ -24,7 +24,11 @@ contract ParentToChildProver is IBlockHashProver {
         view
         returns (address account, uint256 slot, bytes32 value)
     {
-        return (0x3333333333333333333333333333333333333333, 3, 0x3333333333333333333333333333333333333333333333333333333333333333);
+        return (
+            0x3333333333333333333333333333333333333333,
+            3,
+            0x3333333333333333333333333333333333333333333333333333333333333333
+        );
     }
 
     /// @inheritdoc IBlockHashProver

@@ -16,15 +16,15 @@ import { ChildToParentProver$Type } from '../artifacts/src/contracts/ChildToPare
 // replace this with the most recent child block hash available in the parent chain's state
 // this is used to test the prover's ability to prove a block
 const MOST_RECENT_PARENT_CHAIN_BLOCK_HASH: Hash =
-  '0x2222222222222222222222222222222222222222222222222222222222222222'
+  '0x3bc1a497257a501e84e875bbe3e619bbdde267fc255162329e4b9df2c504386d'
 
 // replace this with a known storage slot value at the specified parent chain block hash
 // for example a token account balance
 const KNOWN_STORAGE_SLOT_ACCOUNT: Address =
-  '0x4444444444444444444444444444444444444444'
-const KNOWN_STORAGE_SLOT: bigint = 4n
+  '0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640'
+const KNOWN_STORAGE_SLOT: bigint = 0n
 const KNOWN_STORAGE_SLOT_VALUE: Hash =
-  '0x4444444444444444444444444444444444444444444444444444444444444444'
+  '0x00010002d302d3008c0302be0000000000004b2dd1daa19c71b7debef45c53df'
 
 describe('ChildToParentProver', function () {
   let prover: GetContractReturnType<
@@ -47,8 +47,8 @@ describe('ChildToParentProver', function () {
 
     helper = new ChildToParentProverHelper(
       prover.address,
-      parentClient,
-      childClient
+      childClient,
+      parentClient
     )
   })
 
@@ -77,13 +77,25 @@ describe('ChildToParentProver', function () {
       KNOWN_STORAGE_SLOT_ACCOUNT,
       KNOWN_STORAGE_SLOT
     )
-    expect(slotValue).to.equal(KNOWN_STORAGE_SLOT_VALUE)
+    expect(slotValue).to.equal(
+      KNOWN_STORAGE_SLOT_VALUE,
+      "buildInputForVerifyStorageSlot didn't return the expected slot value"
+    )
     const [account, slot, value] = await prover.read.verifyStorageSlot([
       MOST_RECENT_PARENT_CHAIN_BLOCK_HASH,
       input,
     ])
-    expect(account).to.equal(KNOWN_STORAGE_SLOT_ACCOUNT)
-    expect(slot).to.equal(KNOWN_STORAGE_SLOT)
-    expect(value).to.equal(KNOWN_STORAGE_SLOT_VALUE)
+    expect(account).to.equal(
+      KNOWN_STORAGE_SLOT_ACCOUNT,
+      "verifyStorageSlot didn't return the expected account"
+    )
+    expect(slot).to.equal(
+      KNOWN_STORAGE_SLOT,
+      "verifyStorageSlot didn't return the expected slot"
+    )
+    expect(value).to.equal(
+      KNOWN_STORAGE_SLOT_VALUE,
+      "verifyStorageSlot didn't return the expected slot value"
+    )
   })
 })
