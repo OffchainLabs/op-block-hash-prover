@@ -16,10 +16,7 @@ contract BaseProver {
         bytes memory rlpStorageProof
     ) internal pure returns (bytes32 value) {
         // verify the block header
-        require(
-            blockHash == keccak256(rlpBlockHeader),
-            "Block hash does not match"
-        );
+        require(blockHash == keccak256(rlpBlockHeader), "Block hash does not match");
 
         // extract the state root from the block header
         bytes32 stateRoot = _extractStateRootFromBlockHeader(rlpBlockHeader);
@@ -28,20 +25,18 @@ contract BaseProver {
         value = _getStorageSlotFromStateRoot(stateRoot, rlpAccountProof, rlpStorageProof, account, slot);
     }
 
-    function _extractStateRootFromBlockHeader(bytes memory rlpBlockHeader)
-        internal
-        pure
-        returns (bytes32 stateRoot)
-    {
+    function _extractStateRootFromBlockHeader(bytes memory rlpBlockHeader) internal pure returns (bytes32 stateRoot) {
         // extract the state root from the block header
         stateRoot = Lib_RLPReader.toRLPItem(rlpBlockHeader).readList()[3].readBytes32();
     }
 
-    function _getStorageSlotFromStateRoot(bytes32 stateRoot, bytes memory rlpAccountProof, bytes memory rlpStorageProof, address account, uint256 slot)
-        internal
-        pure
-        returns (bytes32 value)
-    {
+    function _getStorageSlotFromStateRoot(
+        bytes32 stateRoot,
+        bytes memory rlpAccountProof,
+        bytes memory rlpStorageProof,
+        address account,
+        uint256 slot
+    ) internal pure returns (bytes32 value) {
         // verify the proof
         (bool accountExists, bytes memory accountValue) =
             Lib_SecureMerkleTrie.get(abi.encodePacked(account), rlpAccountProof, stateRoot);

@@ -35,14 +35,7 @@ contract ParentToChildProver is BaseProver, IBlockHashProver {
             abi.decode(input, (bytes, address, uint256, bytes, bytes));
 
         // verify proofs and get the value
-        value = _getSlotFromBlockHeader(
-            targetBlockHash,
-            rlpBlockHeader,
-            account,
-            slot,
-            accountProof,
-            storageProof
-        );
+        value = _getSlotFromBlockHeader(targetBlockHash, rlpBlockHeader, account, slot, accountProof, storageProof);
     }
 
     /// @inheritdoc IBlockHashProver
