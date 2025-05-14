@@ -1,4 +1,4 @@
-import { Address, encodeAbiParameters, Hash, Hex, PublicClient } from 'viem'
+import { Address, encodeAbiParameters, Hash, Hex } from 'viem'
 import { IProverHelper } from './IProverHelper'
 import { BaseProverHelper } from './BaseProverHelper'
 
@@ -11,8 +11,6 @@ export class ParentToChildProverHelper
     input: Hex
     targetBlockHash: Hash
   }> {
-    // determine the most recent child block hash available in the parent chain's state
-    // build input for getTargetBlockHash to return this block hash
     return {
       input: '0x',
       targetBlockHash:
@@ -23,8 +21,6 @@ export class ParentToChildProverHelper
   async buildInputForVerifyTargetBlockHash(
     homeBlockHash: Hash
   ): Promise<{ input: Hex; targetBlockHash: Hash }> {
-    // determine the most recent child block hash available in the parent chain's state
-    // build input for getTargetBlockHash to return this block hash
     return {
       input: '0x',
       targetBlockHash:

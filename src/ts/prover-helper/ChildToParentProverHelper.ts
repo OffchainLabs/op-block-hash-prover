@@ -1,12 +1,4 @@
-import {
-  Address,
-  encodeAbiParameters,
-  Hash,
-  Hex,
-  PublicClient,
-  toHex,
-  toRlp,
-} from 'viem'
+import { Address, encodeAbiParameters, Hash, Hex } from 'viem'
 import { IProverHelper } from './IProverHelper'
 import { BaseProverHelper } from './BaseProverHelper'
 

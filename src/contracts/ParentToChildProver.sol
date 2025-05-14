@@ -19,7 +19,9 @@ contract ParentToChildProver is BaseProver, IBlockHashProver {
         return 0x3c8f4a1b6599dfa00468e2609bb45f317ba5fa95e7ef198b03b75bebf54dd580;
     }
 
-    /// @inheritdoc IBlockHashProver
+    /// @notice Verify a storage slot given a target chain block hash and a proof.
+    /// @param  targetBlockHash The block hash of the target chain.
+    /// @param  input ABI encoded (bytes blockHeader, address account, uint256 slot, bytes accountProof, bytes storageProof)
     function verifyStorageSlot(bytes32 targetBlockHash, bytes calldata input)
         external
         pure
