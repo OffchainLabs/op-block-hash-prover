@@ -77,13 +77,25 @@ describe('ParentToChildProver', function () {
       KNOWN_STORAGE_SLOT_ACCOUNT,
       KNOWN_STORAGE_SLOT
     )
-    expect(slotValue).to.equal(KNOWN_STORAGE_SLOT_VALUE)
+    expect(slotValue).to.equal(
+      KNOWN_STORAGE_SLOT_VALUE,
+      "buildInputForVerifyStorageSlot didn't return the expected slot value"
+    )
     const [account, slot, value] = await prover.read.verifyStorageSlot([
       MOST_RECENT_CHILD_CHAIN_BLOCK_HASH,
       input,
     ])
-    expect(account).to.equal(KNOWN_STORAGE_SLOT_ACCOUNT)
-    expect(slot).to.equal(KNOWN_STORAGE_SLOT)
-    expect(value).to.equal(KNOWN_STORAGE_SLOT_VALUE)
+    expect(account).to.equal(
+      KNOWN_STORAGE_SLOT_ACCOUNT,
+      "verifyStorageSlot didn't return the expected account"
+    )
+    expect(slot).to.equal(
+      KNOWN_STORAGE_SLOT,
+      "verifyStorageSlot didn't return the expected slot"
+    )
+    expect(value).to.equal(
+      KNOWN_STORAGE_SLOT_VALUE,
+      "verifyStorageSlot didn't return the expected slot value"
+    )
   })
 })
