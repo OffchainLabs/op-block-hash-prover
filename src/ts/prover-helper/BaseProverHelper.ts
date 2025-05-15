@@ -1,13 +1,4 @@
-import {
-  Address,
-  encodeAbiParameters,
-  Hash,
-  Hex,
-  PublicClient,
-  toHex,
-  toRlp,
-} from 'viem'
-import { IProverHelper } from './IProverHelper'
+import { Address, Hash, Hex, PublicClient, toHex, toRlp } from 'viem'
 
 export class BaseProverHelper {
   constructor(
@@ -104,48 +95,4 @@ export class BaseProverHelper {
 
     return toRlp(headerFields)
   }
-
-  // protected async _buildInputForVerifyStorageSlot(
-  //   targetBlockHash: Hash,
-  //   account: Address,
-  //   slot: bigint
-  // ): Promise<{ input: Hex; slotValue: Hash }> {
-  //   const block: any = await this.targetChainClient.transport.request({
-  //     method: 'eth_getBlockByHash',
-  //     params: [targetBlockHash, true],
-  //   })
-
-  //   if (!block) {
-  //     throw new Error('Block not found')
-  //   }
-
-  //   const rlpBlockHeader = this._convertToRlpBlock(block)
-
-  //   const proof = await this.targetChainClient.getProof({
-  //     address: account,
-  //     storageKeys: [toHex(slot, { size: 32 })],
-  //     blockNumber: block.number,
-  //   })
-
-  //   const slotValue = toHex(proof.storageProof[0].value, { size: 32 })
-
-  //   const rlpAccountProof = toRlp(proof.accountProof)
-  //   const rlpStorageProof = toRlp(proof.storageProof[0].proof)
-
-  //   const input = encodeAbiParameters(
-  //     [
-  //       { type: 'bytes' }, // block header
-  //       { type: 'address' }, // account
-  //       { type: 'uint256' }, // slot
-  //       { type: 'bytes' }, // account proof
-  //       { type: 'bytes' }, // storage proof
-  //     ],
-  //     [rlpBlockHeader, account, slot, rlpAccountProof, rlpStorageProof]
-  //   )
-
-  //   return {
-  //     input,
-  //     slotValue,
-  //   }
-  // }
 }
