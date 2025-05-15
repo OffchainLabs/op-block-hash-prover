@@ -11,7 +11,7 @@ import {
 import { getEnv } from '../src/ts/util'
 import { ChildToParentProverHelper } from '../src/ts/prover-helper/ChildToParentProverHelper'
 import { ChildToParentProver$Type } from '../artifacts/src/contracts/ChildToParentProver.sol/ChildToParentProver'
-import { basicProverTests } from './BasicProverTests'
+import { basicProverTests } from './basicProverTests'
 
 // replace this with the most recent child block hash available in the parent chain's state
 // this is used to test the prover's ability to prove a block
