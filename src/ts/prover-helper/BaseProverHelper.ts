@@ -2,7 +2,7 @@ import { Address, Hash, Hex, PublicClient, toHex, toRlp } from 'viem'
 
 export class BaseProverHelper {
   constructor(
-    public readonly proverAddress: string,
+    public readonly proverAddress: Address,
     readonly homeChainClient: PublicClient,
     readonly targetChainClient: PublicClient
   ) {}
