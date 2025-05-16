@@ -1,5 +1,4 @@
 import { reset } from '@nomicfoundation/hardhat-toolbox-viem/network-helpers'
-import { expect } from 'chai'
 import hre from 'hardhat'
 import {
   Address,
@@ -12,10 +11,11 @@ import {
 import { getEnv } from '../src/ts/util'
 import { ParentToChildProverHelper } from '../src/ts/prover-helper/ParentToChildProverHelper'
 import { ParentToChildProver$Type } from '../artifacts/src/contracts/ParentToChildProver.sol/ParentToChildProver'
+import { basicProverTests } from './basicProverTests'
 
 // replace this with the most recent child block hash available in the parent chain's state
 // this is used to test the prover's ability to prove a block
-const MOST_RECENT_CHILD_CHAIN_BLOCK_HASH: Hash =
+const MOST_RECENT_TARGET_CHAIN_BLOCK_HASH: Hash =
   '0x3c8f4a1b6599dfa00468e2609bb45f317ba5fa95e7ef198b03b75bebf54dd580'
 
 // replace this with a known storage slot value at the specified child chain block hash
@@ -31,15 +31,13 @@ describe('ParentToChildProver', function () {
     ParentToChildProver$Type['abi'],
     PublicClient
   >
-  let parentClient: PublicClient
-  let childClient: PublicClient
+  let targetClient: PublicClient
   let helper: ParentToChildProverHelper
 
-  before(async () => {
+  beforeEach(async () => {
     await reset(getEnv('PARENT_RPC_URL'), getEnv('PARENT_FORK_TEST_BLOCK'))
 
-    parentClient = await hre.viem.getPublicClient()
-    childClient = createPublicClient({
+    targetClient = createPublicClient({
       transport: http(getEnv('CHILD_RPC_URL')),
     })
 
@@ -47,55 +45,19 @@ describe('ParentToChildProver', function () {
 
     helper = new ParentToChildProverHelper(
       prover.address,
-      parentClient,
-      childClient
+      await hre.viem.getPublicClient(),
+      targetClient
     )
   })
 
-  it('getTargetBlockHash should return the correct block hash', async () => {
-    const { input, targetBlockHash } =
-      await helper.buildInputForGetTargetBlockHash()
-    expect(targetBlockHash).to.equal(MOST_RECENT_CHILD_CHAIN_BLOCK_HASH)
-    expect(await prover.read.getTargetBlockHash([input])).to.equal(
-      MOST_RECENT_CHILD_CHAIN_BLOCK_HASH
-    )
-  })
-
-  it('verifyTargetBlockHash should return the correct block hash', async () => {
-    const homeBlockHash = (await parentClient.getBlock()).hash
-    const { input, targetBlockHash } =
-      await helper.buildInputForVerifyTargetBlockHash(homeBlockHash)
-    expect(targetBlockHash).to.equal(MOST_RECENT_CHILD_CHAIN_BLOCK_HASH)
-    expect(
-      await prover.read.verifyTargetBlockHash([homeBlockHash, input])
-    ).to.equal(MOST_RECENT_CHILD_CHAIN_BLOCK_HASH)
-  })
-
-  it('verifyStorageSlot should return the correct slot value', async () => {
-    const { input, slotValue } = await helper.buildInputForVerifyStorageSlot(
-      MOST_RECENT_CHILD_CHAIN_BLOCK_HASH,
-      KNOWN_STORAGE_SLOT_ACCOUNT,
-      KNOWN_STORAGE_SLOT
-    )
-    expect(slotValue).to.equal(
-      KNOWN_STORAGE_SLOT_VALUE,
-      "buildInputForVerifyStorageSlot didn't return the expected slot value"
-    )
-    const [account, slot, value] = await prover.read.verifyStorageSlot([
-      MOST_RECENT_CHILD_CHAIN_BLOCK_HASH,
-      input,
-    ])
-    expect(account).to.equal(
-      KNOWN_STORAGE_SLOT_ACCOUNT,
-      "verifyStorageSlot didn't return the expected account"
-    )
-    expect(slot).to.equal(
-      KNOWN_STORAGE_SLOT,
-      "verifyStorageSlot didn't return the expected slot"
-    )
-    expect(value).to.equal(
-      KNOWN_STORAGE_SLOT_VALUE,
-      "verifyStorageSlot didn't return the expected slot value"
-    )
+  basicProverTests(() => {
+    return {
+      proverAddress: prover.address,
+      proverHelper: helper,
+      expectedTargetBlockHash: MOST_RECENT_TARGET_CHAIN_BLOCK_HASH,
+      knownStorageSlotAccount: KNOWN_STORAGE_SLOT_ACCOUNT,
+      knownStorageSlot: KNOWN_STORAGE_SLOT,
+      knownStorageSlotValue: KNOWN_STORAGE_SLOT_VALUE,
+    }
   })
 })

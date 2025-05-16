@@ -15,7 +15,7 @@ import { basicProverTests } from './basicProverTests'
 
 // replace this with the most recent child block hash available in the parent chain's state
 // this is used to test the prover's ability to prove a block
-const MOST_RECENT_PARENT_CHAIN_BLOCK_HASH: Hash =
+const MOST_RECENT_TARGET_CHAIN_BLOCK_HASH: Hash =
   '0x3bc1a497257a501e84e875bbe3e619bbdde267fc255162329e4b9df2c504386d'
 
 // replace this with a known storage slot value at the specified parent chain block hash
@@ -54,7 +54,7 @@ describe('ChildToParentProver', function () {
     return {
       proverAddress: prover.address,
       proverHelper: helper,
-      expectedTargetBlockHash: MOST_RECENT_PARENT_CHAIN_BLOCK_HASH,
+      expectedTargetBlockHash: MOST_RECENT_TARGET_CHAIN_BLOCK_HASH,
       knownStorageSlotAccount: KNOWN_STORAGE_SLOT_ACCOUNT,
       knownStorageSlot: KNOWN_STORAGE_SLOT,
       knownStorageSlotValue: KNOWN_STORAGE_SLOT_VALUE,
