@@ -14,7 +14,7 @@ import { ChildToParentProver$Type } from '../artifacts/src/contracts/ChildToPare
 import { basicProverTests } from './basicProverTests'
 
 // replace this with the block number of the home chain fork test block
-const FORK_TEST_BLOCK=0x13f7f27c
+const FORK_TEST_BLOCK = 0x13f7f27c
 
 // replace this with the most recent target block hash available in the target chain's state
 // this is used to test the prover's ability to prove a block
