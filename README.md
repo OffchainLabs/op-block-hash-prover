@@ -5,10 +5,11 @@ This project provides starter code for developing [ERC-7888](https://github.com/
 Each rollup stack will have a unique implementation of these prover contracts and tooling. Customized forks of rollup stacks may have their own distinct implementations as well.
 
 The project includes:
-* A pair of skeleton prover contracts - one for parent chain -> child chain, and another for child chain -> parent chain.
-* Skeleton typescript helpers for producing input for the prover contracts. This code is exported as a module.
-* Helpers for producing and verifying MPT proofs.
-* Basic tests for the prover contracts and helpers.
+
+- A pair of skeleton prover contracts - one for parent chain -> child chain, and another for child chain -> parent chain.
+- Skeleton typescript helpers for producing input for the prover contracts. This code is exported as a module.
+- Helpers for producing and verifying MPT proofs.
+- Basic tests for the prover contracts and helpers.
 
 ## Project Structure
 
@@ -22,7 +23,7 @@ src/contracts
 └── ParentToChildProver.sol
 ```
 
-**`src/contracts/BaseProver.sol:BaseProver`** contains internal helper functions for verifying MPT proofs of storage slots given an RLP block header. Both the `ChildToParentProver` and `ParentToChildProver` contracts inherit the `BaseProver`. Unless your home or target chain uses a non standard block header encoding scheme or a non MPT state trie, this contract likely requires no modification. 
+**`src/contracts/BaseProver.sol:BaseProver`** contains internal helper functions for verifying MPT proofs of storage slots given an RLP block header. Both the `ChildToParentProver` and `ParentToChildProver` contracts inherit the `BaseProver`. Unless your home or target chain uses a non standard block header encoding scheme or a non MPT state trie, this contract likely requires no modification.
 
 **`src/contracts/BlockHashProverPointer.sol:BlockHashProverPointer`** is a production ready ERC-7888 compliant `IBlockHashProverPointer` implementation. It has a single owner that can set the prover. This contract likely requires no modification.
 
@@ -31,9 +32,6 @@ src/contracts
 **`src/contracts/ParentToChildProver.sol:ParentToChildProver`** is a skeleton parent to child block hash prover contract. `verifyTargetBlockHash` and `getTargetBlockHash` must be implemented to fit your chain. `verifyStorageSlot` likely does not require modification if your target chain uses the standard Ethereum block header encoding scheme and MPT state trie. See [`IBlockHashProver`](https://github.com/OffchainLabs/broadcast-erc/blob/main/contracts/standard/interfaces/IBlockHashProver.sol) for details.
 
 ### Typescript
-
-
-
 
 this repo should be a starting point for development of BHP's for the broadcaster.
 
