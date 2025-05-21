@@ -52,3 +52,12 @@ src/ts
 
 ### Tests
 
+```
+test
+├── BasicProverTests.test.ts
+└── BlockHashProverPointer.test.ts
+```
+
+**`test/BasicProverTests.test.ts`** contains some basic tests for both provers. To configure them, populate the 2 `testContext` variables according to the code comments and set the RPC URL's in `.env`
+
+**`test/BlockHashProverPointer.test.ts`** contains tests of the pointer contract.
