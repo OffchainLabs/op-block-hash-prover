@@ -3,7 +3,7 @@ import { Address, Hash, Hex, PublicClient, toHex, toRlp } from 'viem'
 /**
  * BaseProverHelper is a base class for prover helpers that provides common functionality
  * for interacting prover contracts.
- * 
+ *
  * It provides methods to get RLP encoded block headers and storage/account proofs.
  */
 export abstract class BaseProverHelper {
@@ -38,7 +38,7 @@ export abstract class BaseProverHelper {
   }
 
   /**
-   * 
+   *
    * @param chain target or home chain
    * @param blockHash Block hash to generate proofs against
    * @param account Account to generate a proof for

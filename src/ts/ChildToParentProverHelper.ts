@@ -5,13 +5,13 @@ import { BaseProverHelper } from './BaseProverHelper'
 /**
  * ChildToParentProverHelper is a class that provides helper methods for interacting
  * with the child to parent IBlockHashProver contract.
- * 
+ *
  * It extends the BaseProverHelper class and implements the IProverHelper interface.
- * 
- * buildInputForGetTargetBlockHash and buildInputForVerifyTargetBlockHash methods 
+ *
+ * buildInputForGetTargetBlockHash and buildInputForVerifyTargetBlockHash methods
  * are currently not implemented and return a hardcoded block hash.
- * 
- * buildInputForVerifyStorageSlot is fully implemented and requires no changes 
+ *
+ * buildInputForVerifyStorageSlot is fully implemented and requires no changes
  * unless the prover's verifyStorageSlot function is modified.
  */
 export class ChildToParentProverHelper
