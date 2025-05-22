@@ -4,6 +4,9 @@ pragma solidity ^0.8.28;
 import {BaseProver} from "./BaseProver.sol";
 import {IBlockHashProver} from "broadcast-erc/contracts/standard/interfaces/IBlockHashProver.sol";
 
+/// @notice Skeleton implementation of a child to parent IBlockHashProver.
+/// @dev    verifyTargetBlockHash and getTargetBlockHash are not implemented.
+///         verifyStorageSlot is implemented to work against any target chain with a standard Ethereum block header and state trie.
 contract ChildToParentProver is BaseProver, IBlockHashProver {
     /// @inheritdoc IBlockHashProver
     function verifyTargetBlockHash(bytes32 homeBlockHash, bytes calldata input)
