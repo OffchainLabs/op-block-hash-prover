@@ -25,9 +25,9 @@ src/contracts
 
 **`src/contracts/BaseProver.sol:BaseProver`** contains internal helper functions for verifying MPT proofs of storage slots given an RLP block header. Both the `ChildToParentProver` and `ParentToChildProver` contracts inherit the `BaseProver`. Unless your home or target chain uses a non standard block header encoding scheme or a non MPT state trie, this contract likely requires no modification.
 
-**`src/contracts/ChildToParentProver.sol:ChildToParentProver`** is a skeleton child to parent block hash prover contract. `verifyTargetBlockHash` and `getTargetBlockHash` must be implemented to fit your chain. `verifyStorageSlot` likely does not require modification if your target chain uses the standard Ethereum block header encoding scheme and MPT state trie. See [`IBlockHashProver`](https://github.com/OffchainLabs/broadcast-erc/blob/main/contracts/standard/interfaces/IBlockHashProver.sol) for details.
+**`src/contracts/ChildToParentProver.sol:ChildToParentProver`** is a skeleton child to parent block hash prover contract whose home is the child chain and target is the parent chain. `verifyTargetBlockHash` and `getTargetBlockHash` must be implemented to fit your chain. `verifyStorageSlot` likely does not require modification if your target chain uses the standard Ethereum block header encoding scheme and MPT state trie. See [`IBlockHashProver`](https://github.com/OffchainLabs/broadcast-erc/blob/main/contracts/standard/interfaces/IBlockHashProver.sol) for details.
 
-**`src/contracts/ParentToChildProver.sol:ParentToChildProver`** is a skeleton parent to child block hash prover contract. `verifyTargetBlockHash` and `getTargetBlockHash` must be implemented to fit your chain. `verifyStorageSlot` likely does not require modification if your target chain uses the standard Ethereum block header encoding scheme and MPT state trie. See [`IBlockHashProver`](https://github.com/OffchainLabs/broadcast-erc/blob/main/contracts/standard/interfaces/IBlockHashProver.sol) for details.
+**`src/contracts/ParentToChildProver.sol:ParentToChildProver`** is the same as `ChildToParentProver`, but has the parent chain as its home and child chain as its target.
 
 **`src/contracts/BlockHashProverPointer.sol:BlockHashProverPointer`** is a production ready ERC-7888 compliant `IBlockHashProverPointer` implementation. It has a single owner that can set the prover. This contract likely requires no modification.
 
@@ -46,7 +46,7 @@ src/ts
 
 **`src/ts/ChildToParentProverHelper.ts:ChildToParentProverHelper`** is a skeleton helper class for producing inputs for the `ChildToParentProver` contract. This class must be fit to your `ChildToParentProver` implementation.
 
-**`src/ts/ParentToChildProverHelper.ts:ParentToChildProverHelper`** is a skeleton helper class for producing inputs for the `ParentToChildProver` contract. This class must be fit to your `ParentToChildProver` implementation.
+**`src/ts/ParentToChildProverHelper.ts:ParentToChildProverHelper`** is the same as the `ChildToParentProverHelper`, but is meant to fit to the `ParentToChildProver` contract.
 
 **`src/ts/IProverHelper.ts:IProverHelper`** is the interface that both helpers must implement.
 
