@@ -58,7 +58,6 @@ describe('Basic Prover Tests', () => {
       )) as any
 
       testContext.proverHelper = new ChildToParentProverHelper(
-        testContext.proverContract.address,
         homeClient,
         targetClient
       )
@@ -95,7 +94,6 @@ describe('Basic Prover Tests', () => {
       )) as any
 
       testContext.proverHelper = new ParentToChildProverHelper(
-        testContext.proverContract.address,
         homeClient,
         targetClient
       )
