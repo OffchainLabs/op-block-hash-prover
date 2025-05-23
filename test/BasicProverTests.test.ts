@@ -33,17 +33,17 @@ describe('Basic Prover Tests', () => {
   describe('ChildToParentProver', () => {
     const testContext = {
       // replace this with the block number of the home chain fork test block
-      forkBlockNumber: 0x13f7f27cn,
+      forkBlockNumber: 136206737n,
       // replace this with the most recent target block hash available in the target chain's state
       // this is used to test the prover's ability to prove a block
       expectedTargetBlockHash:
-        '0x3bc1a497257a501e84e875bbe3e619bbdde267fc255162329e4b9df2c504386d',
+        '0x32c888bd64a6afdefdc4cd21f8bfababffe5659f97c667412c0d1173b7468cfb',
       // replace this with a known storage slot value at the specified target chain block hash
       // for example a token account balance
       knownStorageSlotAccount: '0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640',
       knownStorageSlot: 0n,
       knownStorageSlotValue:
-        '0x00010002d302d3008c0302be0000000000004b2dd1daa19c71b7debef45c53df',
+        '0x00010002d302d3010a0304760000000000004cd9b4161c447c909b096dff435f',
     } as unknown as TestContext
 
     before(async () => {
@@ -69,7 +69,7 @@ describe('Basic Prover Tests', () => {
   describe('ParentToChildProver', () => {
     const testContext = {
       // replace this with the block number of the home chain fork test block
-      forkBlockNumber: 0x1568a70n,
+      forkBlockNumber: 22546304n,
       // replace this with the most recent target block hash available in the target chain's state
       // this is used to test the prover's ability to prove a block
       expectedTargetBlockHash:

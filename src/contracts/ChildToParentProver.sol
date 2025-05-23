@@ -4,22 +4,40 @@ pragma solidity ^0.8.28;
 import {BaseProver} from "./BaseProver.sol";
 import {IBlockHashProver} from "broadcast-erc/contracts/standard/interfaces/IBlockHashProver.sol";
 
+interface IL1Block {
+    function hash() external view returns (bytes32);
+}
+
 /// @notice Skeleton implementation of a child to parent IBlockHashProver.
 /// @dev    verifyTargetBlockHash and getTargetBlockHash are not implemented.
 ///         verifyStorageSlot is implemented to work against any target chain with a standard Ethereum block header and state trie.
 contract ChildToParentProver is BaseProver, IBlockHashProver {
-    /// @inheritdoc IBlockHashProver
+    address public constant l1BlockPredeploy = 0x4200000000000000000000000000000000000015;
+    uint256 public constant l1BlockHashSlot = 2;
+
+    /// @notice Verify the latest available target block hash given a home chain block hash and a proof.
+    /// @param  homeBlockHash The block hash of the home chain.
+    /// @param  input ABI encoded (bytes blockHeader, bytes accountProof, bytes storageProof)
     function verifyTargetBlockHash(bytes32 homeBlockHash, bytes calldata input)
         external
-        view
+        pure
         returns (bytes32 targetBlockHash)
     {
-        return 0x3bc1a497257a501e84e875bbe3e619bbdde267fc255162329e4b9df2c504386d;
+        // decode the input
+        bytes memory rlpBlockHeader;
+        bytes memory accountProof;
+        bytes memory storageProof;
+        (rlpBlockHeader, accountProof, storageProof) = abi.decode(input, (bytes, bytes, bytes));
+
+        // verify proofs and get the value
+        targetBlockHash = _getSlotFromBlockHeader(
+            homeBlockHash, rlpBlockHeader, l1BlockPredeploy, l1BlockHashSlot, accountProof, storageProof
+        );
     }
 
-    /// @inheritdoc IBlockHashProver
-    function getTargetBlockHash(bytes calldata input) external view returns (bytes32 targetBlockHash) {
-        return 0x3bc1a497257a501e84e875bbe3e619bbdde267fc255162329e4b9df2c504386d;
+    /// @notice Get the latest parent chain block hash. Bytes argument is ignored.
+    function getTargetBlockHash(bytes calldata) external view returns (bytes32 targetBlockHash) {
+        return IL1Block(l1BlockPredeploy).hash();
     }
 
     /// @notice Verify a storage slot given a target chain block hash and a proof.
