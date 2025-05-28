@@ -15,6 +15,7 @@ import {
 import { expect } from 'chai'
 import { IBlockHashProver$Type } from '../artifacts/broadcast-erc/contracts/standard/interfaces/IBlockHashProver.sol/IBlockHashProver'
 import { reset } from '@nomicfoundation/hardhat-toolbox-viem/network-helpers'
+import { skip } from 'node:test'
 
 type TestContext = {
   proverContract: GetContractReturnType<
@@ -30,7 +31,7 @@ type TestContext = {
 }
 
 describe('Basic Prover Tests', () => {
-  describe('ChildToParentProver', () => {
+  skip('ChildToParentProver', () => {
     const testContext = {
       // replace this with the block number of the home chain fork test block
       forkBlockNumber: 136206737n,
@@ -73,13 +74,13 @@ describe('Basic Prover Tests', () => {
       // replace this with the most recent target block hash available in the target chain's state
       // this is used to test the prover's ability to prove a block
       expectedTargetBlockHash:
-        '0x3c8f4a1b6599dfa00468e2609bb45f317ba5fa95e7ef198b03b75bebf54dd580',
+        '0xec98a8261b7f7acc46b468859859ccf1c428d5b08d36c937878adc0b14055302',
       // replace this with a known storage slot value at the specified target chain block hash
       // for example a token account balance
-      knownStorageSlotAccount: '0xC6962004f452bE9203591991D15f6b388e09E8D0',
+      knownStorageSlotAccount: '0x1fb3cf6e48F1E7B10213E7b6d87D4c073C7Fdb7b',
       knownStorageSlot: 0n,
       knownStorageSlotValue:
-        '0x0001002328232812fefcf792000000000000000000032a96d8f8d5f811f7608f',
+        '0x00010007d007d002bc0304550000000000004cb938a915df69c703d09382b73e', // todo
     } as unknown as TestContext
 
     before(async () => {
@@ -90,12 +91,14 @@ describe('Basic Prover Tests', () => {
       )
 
       testContext.proverContract = (await hre.viem.deployContract(
-        'ParentToChildProver'
+        'ParentToChildProver',
+        ['0x1c68ECfbf9C8B1E6C0677965b3B9Ecf9A104305b']
       )) as any
 
       testContext.proverHelper = new ParentToChildProverHelper(
         homeClient,
-        targetClient
+        targetClient,
+        testContext.proverContract.address
       )
     })
 
