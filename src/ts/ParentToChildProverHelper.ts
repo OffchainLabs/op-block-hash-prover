@@ -164,7 +164,7 @@ export class ParentToChildProverHelper
       blockNumber,
     })
 
-    const ans = {
+    const decoded = {
       version: zeroHash,
       stateRoot: block.stateRoot,
       messagePasserStorageRoot: proof.storageHash,
@@ -180,13 +180,13 @@ export class ParentToChildProverHelper
           { type: 'bytes32' }, // latestBlockhash
         ],
         [
-          ans.version,
-          ans.stateRoot,
-          ans.messagePasserStorageRoot,
-          ans.latestBlockhash,
+          decoded.version,
+          decoded.stateRoot,
+          decoded.messagePasserStorageRoot,
+          decoded.latestBlockhash,
         ]
       ),
-      decoded: ans,
+      decoded,
     }
   }
 
