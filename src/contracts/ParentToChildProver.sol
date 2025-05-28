@@ -2,6 +2,8 @@
 pragma solidity ^0.8.28;
 
 import {BaseProver} from "./BaseProver.sol";
+import {Lib_SecureMerkleTrie} from "@eth-optimism/contracts/libraries/trie/Lib_SecureMerkleTrie.sol";
+import {Lib_RLPReader} from "@eth-optimism/contracts/libraries/rlp/Lib_RLPReader.sol";
 import {IBlockHashProver} from "broadcast-erc/contracts/standard/interfaces/IBlockHashProver.sol";
 import {Bytes} from "@openzeppelin/contracts/utils/Bytes.sol";
 
@@ -18,6 +20,8 @@ interface IFaultDisputeGame {
 /// @dev    verifyTargetBlockHash and getTargetBlockHash are not implemented.
 ///         verifyStorageSlot is implemented to work against any target chain with a standard Ethereum block header and state trie.
 contract ParentToChildProver is BaseProver, IBlockHashProver {
+    using Lib_RLPReader for Lib_RLPReader.RLPItem;
+
     struct OutputRootProof {
         bytes32 version;
         bytes32 stateRoot;
@@ -66,14 +70,22 @@ contract ParentToChildProver is BaseProver, IBlockHashProver {
         );
 
         // get the anchor game's code hash from the account proof
+        (bool accountExists, bytes memory accountValue) =
+            Lib_SecureMerkleTrie.get(abi.encodePacked(anchorGame), gameProxyAccountProof, stateRoot);
+        require(accountExists, "Anchor game account does not exist");
+        bytes32 codeHash = Lib_RLPReader.toRLPItem(accountValue).readList()[3].readBytes32();
 
         // verify the game proxy code against the code hash
+        require(keccak256(gameProxyCode) == codeHash, "Invalid game proxy code");
 
         // extract the root claim from the game proxy code
+        bytes32 rootClaim = _getRootClaimFromGameProxyCode(gameProxyCode);
 
         // verify the root claim preimage
+        require(rootClaim == keccak256(abi.encode(rootClaimPreimage)), "Invalid root claim preimage");
 
         // return the target block hash from the root claim preimage
+        return rootClaimPreimage.latestBlockhash;
     }
 
     /// @notice todo

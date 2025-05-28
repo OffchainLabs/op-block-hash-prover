@@ -1,25 +1,27 @@
 import {
   Address,
+  decodeAbiParameters,
   encodeAbiParameters,
   getContract,
   Hash,
   Hex,
-  keccak256,
   PublicClient,
   zeroHash,
 } from 'viem'
-import { IProverHelper } from './IProverHelper'
-import { BaseProverHelper } from './BaseProverHelper'
 import {
   iAnchorStateRegistryAbi,
   iFaultDisputeGameAbi,
   parentToChildProverAbi,
 } from '../../wagmi/abi'
+import { BaseProverHelper } from './BaseProverHelper'
+import { IProverHelper } from './IProverHelper'
 
 export class ParentToChildProverHelper
   extends BaseProverHelper
   implements IProverHelper
 {
+  readonly ANCHOR_GAME_SLOT = 3n
+
   constructor(
     homeChainClient: PublicClient,
     targetChainClient: PublicClient,
@@ -46,10 +48,77 @@ export class ParentToChildProverHelper
   async buildInputForVerifyTargetBlockHash(
     homeBlockHash: Hash
   ): Promise<{ input: Hex; targetBlockHash: Hash }> {
+    const asrContract = await this._anchorStateRegistryContract()
+
+    const rlpBlockHeader = await this._getRlpBlockHeader('home', homeBlockHash)
+
+    const {
+      rlpAccountProof: asrAccountProof,
+      rlpStorageProof: asrStorageProof,
+      slotValue: anchorGameBytes32,
+    } = await this._getRlpStorageAndAccountProof(
+      'home',
+      homeBlockHash,
+      asrContract.address,
+      this.ANCHOR_GAME_SLOT
+    )
+
+    const anchorGameAddress = decodeAbiParameters(
+      [{ type: 'address' }],
+      anchorGameBytes32
+    )[0]
+    const anchorGameContract = getContract({
+      address: anchorGameAddress,
+      abi: iFaultDisputeGameAbi,
+      client: this.homeChainClient,
+    })
+
+    const { rlpAccountProof: gameProxyAccountProof } =
+      await this._getRlpStorageAndAccountProof(
+        'home',
+        homeBlockHash,
+        anchorGameAddress,
+        0n
+      )
+
+    const gameProxyCode = await this.homeChainClient.getCode({
+      address: anchorGameAddress,
+    })
+
+    if (gameProxyCode === undefined) {
+      throw new Error('Undefined game proxy code')
+    }
+
+    const rootClaimPreimage = await this._buildRootClaimPreimage(
+      await anchorGameContract.read.l2BlockNumber()
+    )
+
     return {
-      input: '0x',
-      targetBlockHash:
-        '0xec98a8261b7f7acc46b468859859ccf1c428d5b08d36c937878adc0b14055302',
+      input: encodeAbiParameters(
+        [
+          { type: 'bytes' }, // rlpBlockHeader
+          { type: 'bytes' }, // asrAccountProof
+          { type: 'bytes' }, // asrStorageProof
+          { type: 'bytes' }, // gameProxyAccountProof
+          { type: 'bytes' }, // gameProxyCode
+          { type: 'bytes32' }, // rootClaimPreimage ...
+          { type: 'bytes32' },
+          { type: 'bytes32' },
+          { type: 'bytes32' },
+        ],
+        [
+          rlpBlockHeader,
+          asrAccountProof,
+          asrStorageProof,
+          gameProxyAccountProof,
+          gameProxyCode,
+          rootClaimPreimage.decoded.version,
+          rootClaimPreimage.decoded.stateRoot,
+          rootClaimPreimage.decoded.messagePasserStorageRoot,
+          rootClaimPreimage.decoded.latestBlockhash,
+        ]
+      ),
+      targetBlockHash: rootClaimPreimage.decoded.latestBlockhash,
     }
   }
 
@@ -121,13 +190,11 @@ export class ParentToChildProverHelper
     }
   }
 
-  protected async _anchorGameContract(blockNumber?: bigint) {
+  protected async _anchorGameContract() {
     return getContract({
       address: await (
         await this._anchorStateRegistryContract()
-      ).read.anchorGame({
-        blockNumber,
-      }),
+      ).read.anchorGame(),
       abi: iFaultDisputeGameAbi,
       client: this.homeChainClient,
     })
