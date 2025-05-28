@@ -51,7 +51,7 @@ export class ParentToChildProverHelper
     const proof = await this.targetChainClient.getProof({
       address: '0x4200000000000000000000000000000000000016',
       storageKeys: [zeroHash],
-      blockNumber
+      blockNumber,
     })
 
     const ans = {
@@ -126,7 +126,7 @@ export class ParentToChildProverHelper
       address: await (
         await this._anchorStateRegistryContract()
       ).read.anchorGame({
-        blockNumber
+        blockNumber,
       }),
       abi: iFaultDisputeGameAbi,
       client: this.homeChainClient,
