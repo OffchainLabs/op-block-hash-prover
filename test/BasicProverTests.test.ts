@@ -15,7 +15,6 @@ import {
 import { expect } from 'chai'
 import { IBlockHashProver$Type } from '../artifacts/broadcast-erc/contracts/standard/interfaces/IBlockHashProver.sol/IBlockHashProver'
 import { reset } from '@nomicfoundation/hardhat-toolbox-viem/network-helpers'
-import { skip } from 'node:test'
 
 type TestContext = {
   proverContract: GetContractReturnType<
@@ -31,7 +30,7 @@ type TestContext = {
 }
 
 describe('Basic Prover Tests', () => {
-  skip('ChildToParentProver', () => {
+  describe('ChildToParentProver', () => {
     const testContext = {
       // replace this with the block number of the home chain fork test block
       forkBlockNumber: 136206737n,
