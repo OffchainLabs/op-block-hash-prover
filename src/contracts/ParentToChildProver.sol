@@ -32,13 +32,48 @@ contract ParentToChildProver is BaseProver, IBlockHashProver {
         anchorStateRegistry = _anchorStateRegistry;
     }
 
-    /// @inheritdoc IBlockHashProver
+    /// @notice todo
+    /// @param  homeBlockHash The block hash of the home chain.
+    /// @param  input ABI encoded (bytes blockHeader, bytes asrAccountProof, bytes asrStorageProof, bytes gameProxyAccountProof, bytes gameProxyCode, bytes rootClaimPreimage)
     function verifyTargetBlockHash(bytes32 homeBlockHash, bytes calldata input)
         external
         view
         returns (bytes32 targetBlockHash)
     {
-        return 0xec98a8261b7f7acc46b468859859ccf1c428d5b08d36c937878adc0b14055302;
+        // decode the input
+        (
+            bytes memory rlpBlockHeader,
+            bytes memory asrAccountProof,
+            bytes memory asrStorageProof,
+            bytes memory gameProxyAccountProof,
+            bytes memory gameProxyCode,
+            OutputRootProof memory rootClaimPreimage
+        ) = abi.decode(input, (bytes, bytes, bytes, bytes, bytes, OutputRootProof));
+
+        // check the block hash
+        require(homeBlockHash == keccak256(rlpBlockHeader), "Invalid home block header");
+        bytes32 stateRoot = _extractStateRootFromBlockHeader(rlpBlockHeader);
+
+        // grab the anchor game address
+        address anchorGame = address(
+            uint160(
+                uint256(
+                    _getStorageSlotFromStateRoot(
+                        stateRoot, asrAccountProof, asrStorageProof, anchorStateRegistry, ANCHOR_GAME_SLOT
+                    )
+                )
+            )
+        );
+
+        // get the anchor game's code hash from the account proof
+
+        // verify the game proxy code against the code hash
+
+        // extract the root claim from the game proxy code
+
+        // verify the root claim preimage
+
+        // return the target block hash from the root claim preimage
     }
 
     /// @notice todo
