@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-import {BaseProver} from "./BaseProver.sol";
+import {ProverUtils} from "./ProverUtils.sol";
 import {IBlockHashProver} from "broadcast-erc/contracts/standard/interfaces/IBlockHashProver.sol";
 
 interface IL1Block {
@@ -11,7 +11,7 @@ interface IL1Block {
 /// @notice Skeleton implementation of a child to parent IBlockHashProver.
 /// @dev    verifyTargetBlockHash and getTargetBlockHash are not implemented.
 ///         verifyStorageSlot is implemented to work against any target chain with a standard Ethereum block header and state trie.
-contract ChildToParentProver is BaseProver, IBlockHashProver {
+contract ChildToParentProver is IBlockHashProver {
     address public constant l1BlockPredeploy = 0x4200000000000000000000000000000000000015;
     uint256 public constant l1BlockHashSlot = 2;
 
@@ -30,7 +30,7 @@ contract ChildToParentProver is BaseProver, IBlockHashProver {
         (rlpBlockHeader, accountProof, storageProof) = abi.decode(input, (bytes, bytes, bytes));
 
         // verify proofs and get the value
-        targetBlockHash = _getSlotFromBlockHeader(
+        targetBlockHash = ProverUtils.getSlotFromBlockHeader(
             homeBlockHash, rlpBlockHeader, l1BlockPredeploy, l1BlockHashSlot, accountProof, storageProof
         );
     }
@@ -56,7 +56,7 @@ contract ChildToParentProver is BaseProver, IBlockHashProver {
             abi.decode(input, (bytes, address, uint256, bytes, bytes));
 
         // verify proofs and get the value
-        value = _getSlotFromBlockHeader(targetBlockHash, rlpBlockHeader, account, slot, accountProof, storageProof);
+        value = ProverUtils.getSlotFromBlockHeader(targetBlockHash, rlpBlockHeader, account, slot, accountProof, storageProof);
     }
 
     /// @inheritdoc IBlockHashProver

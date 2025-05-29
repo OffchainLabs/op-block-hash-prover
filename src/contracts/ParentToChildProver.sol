@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-import {BaseProver} from "./BaseProver.sol";
 import {Lib_SecureMerkleTrie} from "@eth-optimism/contracts/libraries/trie/Lib_SecureMerkleTrie.sol";
 import {Lib_RLPReader} from "@eth-optimism/contracts/libraries/rlp/Lib_RLPReader.sol";
+import {ProverUtils} from "./ProverUtils.sol";
 import {IBlockHashProver} from "broadcast-erc/contracts/standard/interfaces/IBlockHashProver.sol";
 import {Bytes} from "@openzeppelin/contracts/utils/Bytes.sol";
 
@@ -19,7 +19,7 @@ interface IFaultDisputeGame {
 /// @notice Skeleton implementation of a child to parent IBlockHashProver.
 /// @dev    verifyTargetBlockHash and getTargetBlockHash are not implemented.
 ///         verifyStorageSlot is implemented to work against any target chain with a standard Ethereum block header and state trie.
-contract ParentToChildProver is BaseProver, IBlockHashProver {
+contract ParentToChildProver is IBlockHashProver {
     using Lib_RLPReader for Lib_RLPReader.RLPItem;
 
     struct OutputRootProof {
@@ -56,13 +56,13 @@ contract ParentToChildProver is BaseProver, IBlockHashProver {
 
         // check the block hash
         require(homeBlockHash == keccak256(rlpBlockHeader), "Invalid home block header");
-        bytes32 stateRoot = _extractStateRootFromBlockHeader(rlpBlockHeader);
+        bytes32 stateRoot = ProverUtils.extractStateRootFromBlockHeader(rlpBlockHeader);
 
         // grab the anchor game address
         address anchorGame = address(
             uint160(
                 uint256(
-                    _getStorageSlotFromStateRoot(
+                    ProverUtils.getStorageSlotFromStateRoot(
                         stateRoot, asrAccountProof, asrStorageProof, anchorStateRegistry, ANCHOR_GAME_SLOT
                     )
                 )
@@ -134,7 +134,7 @@ contract ParentToChildProver is BaseProver, IBlockHashProver {
             abi.decode(input, (bytes, address, uint256, bytes, bytes));
 
         // verify proofs and get the value
-        value = _getSlotFromBlockHeader(targetBlockHash, rlpBlockHeader, account, slot, accountProof, storageProof);
+        value = ProverUtils.getSlotFromBlockHeader(targetBlockHash, rlpBlockHeader, account, slot, accountProof, storageProof);
     }
 
     /// @inheritdoc IBlockHashProver
