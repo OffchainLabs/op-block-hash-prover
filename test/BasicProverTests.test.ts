@@ -17,6 +17,7 @@ import { IBlockHashProver$Type } from '../artifacts/broadcast-erc/contracts/stan
 import { reset } from '@nomicfoundation/hardhat-toolbox-viem/network-helpers'
 
 type TestContext = {
+  proverType: 'ChildToParentProver' | 'ParentToChildProver'
   proverContract: GetContractReturnType<
     IBlockHashProver$Type['abi'],
     PublicClient
@@ -29,9 +30,25 @@ type TestContext = {
   knownStorageSlotValue: Hash
 }
 
+const gasEstimates = {
+  ParentToChildProver: {
+    getTargetBlockHash: 0n,
+    verifyTargetBlockHash: 0n,
+    verifyStorageSlot: 0n,
+  },
+  ChildToParentProver: {
+    getTargetBlockHash: 0n,
+    verifyTargetBlockHash: 0n,
+    verifyStorageSlot: 0n,
+  },
+}
+
+let homeClient: PublicClient
+let targetClient: PublicClient
 describe('Basic Prover Tests', () => {
   describe('ChildToParentProver', () => {
     const testContext = {
+      proverType: 'ChildToParentProver',
       // replace this with the block number of the home chain fork test block
       forkBlockNumber: 0x13f7f27cn,
       // replace this with the most recent target block hash available in the target chain's state
@@ -47,11 +64,13 @@ describe('Basic Prover Tests', () => {
     } as unknown as TestContext
 
     before(async () => {
-      const { homeClient, targetClient } = await initialSetup(
+      const clients = await initialSetup(
         getEnv('CHILD_RPC_URL'),
         getEnv('PARENT_RPC_URL'),
         testContext.forkBlockNumber
       )
+      homeClient = clients.homeClient
+      targetClient = clients.targetClient
 
       testContext.proverContract = (await hre.viem.deployContract(
         'ChildToParentProver'
@@ -68,6 +87,7 @@ describe('Basic Prover Tests', () => {
 
   describe('ParentToChildProver', () => {
     const testContext = {
+      proverType: 'ParentToChildProver',
       // replace this with the block number of the home chain fork test block
       forkBlockNumber: 0x1568a70n,
       // replace this with the most recent target block hash available in the target chain's state
@@ -83,11 +103,13 @@ describe('Basic Prover Tests', () => {
     } as unknown as TestContext
 
     before(async () => {
-      const { homeClient, targetClient } = await initialSetup(
+      const clients = await initialSetup(
         getEnv('PARENT_RPC_URL'),
         getEnv('CHILD_RPC_URL'),
         testContext.forkBlockNumber
       )
+      homeClient = clients.homeClient
+      targetClient = clients.targetClient
 
       testContext.proverContract = (await hre.viem.deployContract(
         'ParentToChildProver'
@@ -100,6 +122,10 @@ describe('Basic Prover Tests', () => {
     })
 
     runBasicTests(testContext)
+  })
+
+  after(() => {
+    console.log('\nGas Estimates:', gasEstimates)
   })
 })
 
@@ -128,6 +154,14 @@ function runBasicTests(ctx: TestContext) {
     expect(await ctx.proverContract.read.getTargetBlockHash([input])).to.equal(
       ctx.expectedTargetBlockHash
     )
+
+    gasEstimates[ctx.proverType].getTargetBlockHash =
+      await homeClient.estimateContractGas({
+        address: ctx.proverContract.address,
+        abi: ctx.proverContract.abi,
+        functionName: 'getTargetBlockHash',
+        args: [input],
+      })
   })
 
   it('verifyTargetBlockHash should return the correct block hash', async () => {
@@ -145,6 +179,14 @@ function runBasicTests(ctx: TestContext) {
         input,
       ])
     ).to.equal(ctx.expectedTargetBlockHash)
+
+    gasEstimates[ctx.proverType].verifyTargetBlockHash =
+      await homeClient.estimateContractGas({
+        address: ctx.proverContract.address,
+        abi: ctx.proverContract.abi,
+        functionName: 'verifyTargetBlockHash',
+        args: [homeBlockHash, input],
+      })
   })
 
   it('verifyStorageSlot should return the correct slot value', async () => {
@@ -175,6 +217,14 @@ function runBasicTests(ctx: TestContext) {
       ctx.knownStorageSlotValue,
       "verifyStorageSlot didn't return the expected slot value"
     )
+
+    gasEstimates[ctx.proverType].verifyStorageSlot =
+      await homeClient.estimateContractGas({
+        address: ctx.proverContract.address,
+        abi: ctx.proverContract.abi,
+        functionName: 'verifyStorageSlot',
+        args: [ctx.expectedTargetBlockHash, input],
+      })
   })
 }
 
