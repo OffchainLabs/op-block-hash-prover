@@ -56,7 +56,9 @@ contract ChildToParentProver is IBlockHashProver {
             abi.decode(input, (bytes, address, uint256, bytes, bytes));
 
         // verify proofs and get the value
-        value = ProverUtils.getSlotFromBlockHeader(targetBlockHash, rlpBlockHeader, account, slot, accountProof, storageProof);
+        value = ProverUtils.getSlotFromBlockHeader(
+            targetBlockHash, rlpBlockHeader, account, slot, accountProof, storageProof
+        );
     }
 
     /// @inheritdoc IBlockHashProver
