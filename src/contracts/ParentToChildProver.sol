@@ -71,9 +71,9 @@ contract ParentToChildProver is IBlockHashProver {
 
         // get the anchor game's code hash from the account proof
         (bool accountExists, bytes memory accountValue) =
-            Lib_SecureMerkleTrie.get(abi.encodePacked(anchorGame), gameProxyAccountProof, stateRoot);
+            ProverUtils.getAccountDataFromStateRoot(stateRoot, gameProxyAccountProof, anchorGame);
         require(accountExists, "Anchor game account does not exist");
-        bytes32 codeHash = Lib_RLPReader.toRLPItem(accountValue).readList()[3].readBytes32();
+        bytes32 codeHash = ProverUtils.extractCodeHashFromAccountData(accountValue);
 
         // verify the game proxy code against the code hash
         require(keccak256(gameProxyCode) == codeHash, "Invalid game proxy code");
