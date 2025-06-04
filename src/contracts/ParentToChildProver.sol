@@ -8,6 +8,7 @@ import {IBlockHashProver} from "broadcast-erc/contracts/standard/interfaces/IBlo
 /// @dev    verifyTargetBlockHash and getTargetBlockHash are not implemented.
 ///         verifyStorageSlot is implemented to work against any target chain with a standard Ethereum block header and state trie.
 contract ParentToChildProver is IBlockHashProver {
+    // UNIMPLEMENTED: verifyTargetBlockHash
     /// @inheritdoc IBlockHashProver
     function verifyTargetBlockHash(bytes32 homeBlockHash, bytes calldata input)
         external
@@ -17,6 +18,7 @@ contract ParentToChildProver is IBlockHashProver {
         return 0x3c8f4a1b6599dfa00468e2609bb45f317ba5fa95e7ef198b03b75bebf54dd580;
     }
 
+    // UNIMPLEMENTED: getTargetBlockHash
     /// @inheritdoc IBlockHashProver
     function getTargetBlockHash(bytes calldata input) external view returns (bytes32 targetBlockHash) {
         return 0x3c8f4a1b6599dfa00468e2609bb45f317ba5fa95e7ef198b03b75bebf54dd580;

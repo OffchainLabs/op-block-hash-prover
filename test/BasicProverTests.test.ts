@@ -49,16 +49,21 @@ describe('Basic Prover Tests', () => {
   describe('ChildToParentProver', () => {
     const testContext = {
       proverType: 'ChildToParentProver',
+      // UNIMPLEMENTED: forkBlockNumber
       // replace this with the block number of the home chain fork test block
       forkBlockNumber: 0x13f7f27cn,
+      // UNIMPLEMENTED: expectedTargetBlockHash
       // replace this with the most recent target block hash available in the target chain's state
       // this is used to test the prover's ability to prove a block
       expectedTargetBlockHash:
         '0x3bc1a497257a501e84e875bbe3e619bbdde267fc255162329e4b9df2c504386d',
+      // UNIMPLEMENTED: knownStorageSlotAccount
       // replace this with a known storage slot value at the specified target chain block hash
       // for example a token account balance
       knownStorageSlotAccount: '0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640',
+      // UNIMPLEMENTED: knownStorageSlot
       knownStorageSlot: 0n,
+      // UNIMPLEMENTED: knownStorageSlotValue
       knownStorageSlotValue:
         '0x00010002d302d3008c0302be0000000000004b2dd1daa19c71b7debef45c53df',
     } as unknown as TestContext
@@ -88,16 +93,21 @@ describe('Basic Prover Tests', () => {
   describe('ParentToChildProver', () => {
     const testContext = {
       proverType: 'ParentToChildProver',
+      // UNIMPLEMENTED: forkBlockNumber
       // replace this with the block number of the home chain fork test block
       forkBlockNumber: 0x1568a70n,
+      // UNIMPLEMENTED: expectedTargetBlockHash
       // replace this with the most recent target block hash available in the target chain's state
       // this is used to test the prover's ability to prove a block
       expectedTargetBlockHash:
         '0x3c8f4a1b6599dfa00468e2609bb45f317ba5fa95e7ef198b03b75bebf54dd580',
+      // UNIMPLEMENTED: knownStorageSlotAccount
       // replace this with a known storage slot value at the specified target chain block hash
       // for example a token account balance
       knownStorageSlotAccount: '0xC6962004f452bE9203591991D15f6b388e09E8D0',
+      // UNIMPLEMENTED: knownStorageSlot
       knownStorageSlot: 0n,
+      // UNIMPLEMENTED: knownStorageSlotValue
       knownStorageSlotValue:
         '0x0001002328232812fefcf792000000000000000000032a96d8f8d5f811f7608f',
     } as unknown as TestContext

@@ -6,6 +6,7 @@ export class ParentToChildProverHelper
   extends BaseProverHelper
   implements IProverHelper
 {
+  // UNIMPLEMENTED: buildInputForGetTargetBlockHash
   async buildInputForGetTargetBlockHash(): Promise<{
     input: Hex
     targetBlockHash: Hash
@@ -17,6 +18,7 @@ export class ParentToChildProverHelper
     }
   }
 
+  // UNIMPLEMENTED: buildInputForVerifyTargetBlockHash
   async buildInputForVerifyTargetBlockHash(
     homeBlockHash: Hash
   ): Promise<{ input: Hex; targetBlockHash: Hash }> {
