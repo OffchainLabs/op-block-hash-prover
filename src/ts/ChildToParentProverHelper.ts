@@ -23,7 +23,9 @@ export class ChildToParentProverHelper
     '0x4200000000000000000000000000000000000015'
   public readonly l1BlockHashSlot: bigint = 2n
 
-  // return the newest block hash that can be returned by getTargetBlockHash on the prover
+  /**
+   * @see IProverHelper.buildInputForGetTargetBlockHash
+   */
   async buildInputForGetTargetBlockHash(): Promise<{
     input: Hex
     targetBlockHash: Hash
@@ -34,6 +36,9 @@ export class ChildToParentProverHelper
     }
   }
 
+  /**
+   * @see IProverHelper.buildInputForGetTargetBlockHash
+   */
   async buildInputForVerifyTargetBlockHash(
     homeBlockHash: Hash
   ): Promise<{ input: Hex; targetBlockHash: Hash }> {
@@ -61,6 +66,9 @@ export class ChildToParentProverHelper
     }
   }
 
+  /**
+   * @see IProverHelper.buildInputForVerifyStorageSlot
+   */
   async buildInputForVerifyStorageSlot(
     targetBlockHash: Hash,
     account: Address,
