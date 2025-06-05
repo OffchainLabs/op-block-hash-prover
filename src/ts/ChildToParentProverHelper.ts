@@ -19,6 +19,9 @@ export class ChildToParentProverHelper
   implements IProverHelper
 {
   // UNIMPLEMENTED: buildInputForGetTargetBlockHash
+  /**
+   * @see IProverHelper.buildInputForGetTargetBlockHash
+   */
   async buildInputForGetTargetBlockHash(): Promise<{
     input: Hex
     targetBlockHash: Hash
@@ -31,6 +34,9 @@ export class ChildToParentProverHelper
   }
 
   // UNIMPLEMENTED: buildInputForVerifyTargetBlockHash
+  /**
+   * @see IProverHelper.buildInputForVerifyTargetBlockHash
+   */
   async buildInputForVerifyTargetBlockHash(
     homeBlockHash: Hash
   ): Promise<{ input: Hex; targetBlockHash: Hash }> {
@@ -41,6 +47,9 @@ export class ChildToParentProverHelper
     }
   }
 
+  /**
+   * @see IProverHelper.buildInputForVerifyStorageSlot
+   */
   async buildInputForVerifyStorageSlot(
     targetBlockHash: Hash,
     account: Address,
