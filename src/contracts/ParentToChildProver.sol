@@ -15,9 +15,9 @@ interface IFaultDisputeGame {
     function rootClaim() external view returns (bytes32);
 }
 
-/// @notice Skeleton implementation of a parent to child IBlockHashProver.
-/// @dev    verifyTargetBlockHash and getTargetBlockHash are not implemented.
-///         verifyStorageSlot is implemented to work against any target chain with a standard Ethereum block header and state trie.
+/// @notice OP-stack implementation of a parent to child IBlockHashProver.
+/// @dev    verifyTargetBlockHash and getTargetBlockHash get block hashes from a valid fault dispute game proxy contract.
+///         verifyStorageSlot is implemented to work against any OP-stack child chain with a standard Ethereum block header and state trie.
 contract ParentToChildProver is IBlockHashProver {
     using Lib_RLPReader for Lib_RLPReader.RLPItem;
 
