@@ -8,8 +8,8 @@ interface IL1Block {
     function hash() external view returns (bytes32);
 }
 
-/// @notice Skeleton implementation of a child to parent IBlockHashProver.
-/// @dev    verifyTargetBlockHash and getTargetBlockHash are not implemented.
+/// @notice OP-stack implementation of a child to parent IBlockHashProver.
+/// @dev    verifyTargetBlockHash and getTargetBlockHash get block hashes from the L1Block predeploy.
 ///         verifyStorageSlot is implemented to work against any target chain with a standard Ethereum block header and state trie.
 contract ChildToParentProver is IBlockHashProver {
     address public constant l1BlockPredeploy = 0x4200000000000000000000000000000000000015;
