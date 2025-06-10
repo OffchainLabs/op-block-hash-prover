@@ -16,6 +16,17 @@ import {
 import { BaseProverHelper } from './BaseProverHelper'
 import { IProverHelper } from './IProverHelper'
 
+const iExtendedFaultDisputeGameAbi = [
+  ...iFaultDisputeGameAbi,
+  {
+    type: 'function',
+    inputs: [],
+    name: 'l2BlockNumber',
+    outputs: [{ type: 'uint256' }],
+    stateMutability: 'view',
+  },
+] as const
+
 export class ParentToChildProverHelper
   extends BaseProverHelper
   implements IProverHelper
@@ -43,7 +54,22 @@ export class ParentToChildProverHelper
     const rootClaimPreimage = await this._buildRootClaimPreimage(l2BlockNumber)
 
     return {
-      input: rootClaimPreimage.encoded,
+      input: encodeAbiParameters(
+        [
+          { type: 'address' }, // anchorGame
+          { type: 'bytes32' }, // rootClaimPreimage ...
+          { type: 'bytes32' },
+          { type: 'bytes32' },
+          { type: 'bytes32' },
+        ],
+        [
+          anchorGame.address,
+          rootClaimPreimage.decoded.version,
+          rootClaimPreimage.decoded.stateRoot,
+          rootClaimPreimage.decoded.messagePasserStorageRoot,
+          rootClaimPreimage.decoded.latestBlockhash,
+        ]
+      ),
       targetBlockHash: rootClaimPreimage.decoded.latestBlockhash,
     }
   }
@@ -75,7 +101,7 @@ export class ParentToChildProverHelper
     )[0]
     const anchorGameContract = getContract({
       address: anchorGameAddress,
-      abi: iFaultDisputeGameAbi,
+      abi: iExtendedFaultDisputeGameAbi,
       client: this.homeChainClient,
     })
 
@@ -204,7 +230,7 @@ export class ParentToChildProverHelper
       address: await (
         await this._anchorStateRegistryContract()
       ).read.anchorGame(),
-      abi: iFaultDisputeGameAbi,
+      abi: iExtendedFaultDisputeGameAbi,
       client: this.homeChainClient,
     })
   }
@@ -212,7 +238,16 @@ export class ParentToChildProverHelper
   protected async _anchorStateRegistryContract() {
     return getContract({
       address: await this._proverContract().read.anchorStateRegistry(),
-      abi: iAnchorStateRegistryAbi,
+      abi: [
+        ...iAnchorStateRegistryAbi,
+        {
+          type: 'function',
+          inputs: [],
+          name: 'anchorGame',
+          outputs: [{ type: 'address' }],
+          stateMutability: 'view',
+        },
+      ] as const,
       client: this.homeChainClient,
     })
   }

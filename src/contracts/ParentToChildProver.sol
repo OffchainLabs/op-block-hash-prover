@@ -8,12 +8,11 @@ import {IBlockHashProver} from "broadcast-erc/contracts/standard/interfaces/IBlo
 import {Bytes} from "@openzeppelin/contracts/utils/Bytes.sol";
 
 interface IAnchorStateRegistry {
-    function anchorGame() external view returns (address);
+    function isGameClaimValid(address _game) external view returns (bool);
 }
 
 interface IFaultDisputeGame {
     function rootClaim() external view returns (bytes32);
-    function l2BlockNumber() external view returns (uint256);
 }
 
 /// @notice Skeleton implementation of a child to parent IBlockHashProver.
@@ -88,16 +87,17 @@ contract ParentToChildProver is IBlockHashProver {
         return rootClaimPreimage.latestBlockhash;
     }
 
-    /// @notice todo
-    /// @param  input ABI encoded (OutputRootProof rootClaimPreimage)
+    /// @notice Return the blockhash from a valid fault dispute game's root claim. The game's claim must be considered valid by the anchor state registry.
+    /// @param  input ABI encoded (address gameProxy, OutputRootProof rootClaimPreimage)
     function getTargetBlockHash(bytes calldata input) external view returns (bytes32 targetBlockHash) {
         // decode the input
-        OutputRootProof memory rootClaimPreimage = abi.decode(input, (OutputRootProof));
+        (address gameProxy, OutputRootProof memory rootClaimPreimage) = abi.decode(input, (address, OutputRootProof));
 
-        address gameProxy = IAnchorStateRegistry(anchorStateRegistry).anchorGame();
+        // check the game proxy address
+        require(IAnchorStateRegistry(anchorStateRegistry).isGameClaimValid(gameProxy), "Invalid game proxy");
+
         bytes32 rootClaim = IFaultDisputeGame(gameProxy).rootClaim();
-
-        require(rootClaim == keccak256(input), "Invalid root claim preimage");
+        require(rootClaim == keccak256(abi.encode(rootClaimPreimage)), "Invalid root claim preimage");
 
         return rootClaimPreimage.latestBlockhash;
     }
