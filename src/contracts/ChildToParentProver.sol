@@ -15,7 +15,7 @@ contract ChildToParentProver is IBlockHashProver {
     address public constant l1BlockPredeploy = 0x4200000000000000000000000000000000000015;
     uint256 public constant l1BlockHashSlot = 2;
 
-    /// @notice Verify the latest available target block hash given a home chain block hash and a proof.
+    /// @notice Verify the latest available target block hash given a home chain block hash and a storage proof of the L1Block predeploy.
     /// @param  homeBlockHash The block hash of the home chain.
     /// @param  input ABI encoded (bytes blockHeader, bytes accountProof, bytes storageProof)
     function verifyTargetBlockHash(bytes32 homeBlockHash, bytes calldata input)
@@ -35,7 +35,7 @@ contract ChildToParentProver is IBlockHashProver {
         );
     }
 
-    /// @notice Get the latest parent chain block hash. Bytes argument is ignored.
+    /// @notice Get the latest parent chain block hash from the L1Block predeploy. Bytes argument is ignored.
     function getTargetBlockHash(bytes calldata) external view returns (bytes32 targetBlockHash) {
         return IL1Block(l1BlockPredeploy).hash();
     }

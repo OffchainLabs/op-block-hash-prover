@@ -35,9 +35,19 @@ contract ParentToChildProver is IBlockHashProver {
         anchorStateRegistry = _anchorStateRegistry;
     }
 
-    /// @notice todo
+    /// @notice Verify the latest available target block hash given a home chain block hash, a storage proof of the AnchorStateRegistry, the anchor game proxy code and a root claim preimage.
+    /// @dev    1. The anchor game address is extracted from the AnchorStateRegistry storage slot.
+    ///         2. The game proxy code hash is verified against the block hash.
+    ///         3. The game's root claim hash is extracted from the game proxy code.
+    ///         4. The root claim preimage is verified against the root claim hash.
+    ///         5. The target block hash is returned from the root claim preimage.
     /// @param  homeBlockHash The block hash of the home chain.
-    /// @param  input ABI encoded (bytes blockHeader, bytes asrAccountProof, bytes asrStorageProof, bytes gameProxyAccountProof, bytes gameProxyCode, bytes rootClaimPreimage)
+    /// @param  input ABI encoded (bytes blockHeader,
+    ///                            bytes asrAccountProof,
+    ///                            bytes asrStorageProof,
+    ///                            bytes gameProxyAccountProof,
+    ///                            bytes gameProxyCode,
+    ///                            bytes rootClaimPreimage)
     function verifyTargetBlockHash(bytes32 homeBlockHash, bytes calldata input)
         external
         view
@@ -88,6 +98,9 @@ contract ParentToChildProver is IBlockHashProver {
     }
 
     /// @notice Return the blockhash from a valid fault dispute game's root claim. The game's claim must be considered valid by the anchor state registry.
+    /// @dev    1. Check the game proxy using IAnchorStateRegistry.isGameClaimValid
+    ///         2. Verify the root claim preimage against the game's root claim.
+    ///         3. Return the latest block hash from the root claim preimage.
     /// @param  input ABI encoded (address gameProxy, OutputRootProof rootClaimPreimage)
     function getTargetBlockHash(bytes calldata input) external view returns (bytes32 targetBlockHash) {
         // decode the input
@@ -100,22 +113,6 @@ contract ParentToChildProver is IBlockHashProver {
         require(rootClaim == keccak256(abi.encode(rootClaimPreimage)), "Invalid root claim preimage");
 
         return rootClaimPreimage.latestBlockhash;
-    }
-
-    // THIS FUNCTION WORKS AND IS TESTED ON ITS OWN
-    function _getRootClaimFromGameProxyCode(bytes memory bytecode) internal pure returns (bytes32 rootClaim) {
-        // CWIA Calldata Layout:
-        // ┌──────────────┬────────────────────────────────────┐
-        // │    Bytes     │            Description             │
-        // ├──────────────┼────────────────────────────────────┤
-        // │ [0, 20)      │ Game creator address               │
-        // │ [20, 52)     │ Root claim                         │
-        // │ [52, 84)     │ Parent block hash at creation time │
-        // │ [84, 84 + n) │ Extra data (opaque)                │
-        // └──────────────┴────────────────────────────────────┘
-
-        // grab the root claim from the CWIA data which starts at 0x62
-        return abi.decode(Bytes.slice(bytecode, 0x62 + 20, 0x62 + 52), (bytes32));
     }
 
     /// @notice Verify a storage slot given a target chain block hash and a proof.
@@ -142,5 +139,20 @@ contract ParentToChildProver is IBlockHashProver {
     /// @inheritdoc IBlockHashProver
     function version() external pure returns (uint256) {
         return 1;
+    }
+
+    function _getRootClaimFromGameProxyCode(bytes memory bytecode) internal pure returns (bytes32 rootClaim) {
+        // CWIA Calldata Layout:
+        // ┌──────────────┬────────────────────────────────────┐
+        // │    Bytes     │            Description             │
+        // ├──────────────┼────────────────────────────────────┤
+        // │ [0, 20)      │ Game creator address               │
+        // │ [20, 52)     │ Root claim                         │
+        // │ [52, 84)     │ Parent block hash at creation time │
+        // │ [84, 84 + n) │ Extra data (opaque)                │
+        // └──────────────┴────────────────────────────────────┘
+
+        // grab the root claim from the CWIA data which starts at 0x62
+        return abi.decode(Bytes.slice(bytecode, 0x62 + 20, 0x62 + 52), (bytes32));
     }
 }
