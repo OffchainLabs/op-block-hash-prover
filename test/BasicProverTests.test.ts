@@ -49,14 +49,9 @@ describe('Basic Prover Tests', () => {
   describe('ChildToParentProver', () => {
     const testContext = {
       proverType: 'ChildToParentProver',
-      // replace this with the block number of the home chain fork test block
       forkBlockNumber: 136206737n,
-      // replace this with the most recent target block hash available in the target chain's state
-      // this is used to test the prover's ability to prove a block
       expectedTargetBlockHash:
         '0x32c888bd64a6afdefdc4cd21f8bfababffe5659f97c667412c0d1173b7468cfb',
-      // replace this with a known storage slot value at the specified target chain block hash
-      // for example a token account balance
       knownStorageSlotAccount: '0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640',
       knownStorageSlot: 0n,
       knownStorageSlotValue:
@@ -88,18 +83,13 @@ describe('Basic Prover Tests', () => {
   describe('ParentToChildProver', () => {
     const testContext = {
       proverType: 'ParentToChildProver',
-      // replace this with the block number of the home chain fork test block
       forkBlockNumber: 22546304n,
-      // replace this with the most recent target block hash available in the target chain's state
-      // this is used to test the prover's ability to prove a block
       expectedTargetBlockHash:
         '0xec98a8261b7f7acc46b468859859ccf1c428d5b08d36c937878adc0b14055302',
-      // replace this with a known storage slot value at the specified target chain block hash
-      // for example a token account balance
       knownStorageSlotAccount: '0x1fb3cf6e48F1E7B10213E7b6d87D4c073C7Fdb7b',
       knownStorageSlot: 0n,
       knownStorageSlotValue:
-        '0x00010007d007d002bc0304550000000000004cb938a915df69c703d09382b73e', // todo
+        '0x00010007d007d002bc0304550000000000004cb938a915df69c703d09382b73e',
     } as unknown as TestContext
 
     before(async () => {
