@@ -36,6 +36,14 @@ contract ChildToParentProver is IBlockHashProver {
     }
 
     /// @notice Get the latest parent chain block hash from the L1Block predeploy. Bytes argument is ignored.
+    /// @dev    OP stack does not provide access to historical block hashes, so this function can only return the latest.
+    ///
+    ///         Calls to the Receiver contract could revert because proofs can become stale after the predeploy's block hash is updated.
+    ///         In this case, failing calls may need to be retried with a new proof.
+    ///
+    ///         If the L1Block is consistently updated too frequently, calls to the Receiver may be DoS'd.
+    ///         In this case, this prover contract may need to be modified to use a different source of block hashes,
+    ///         such as a backup contract that calls the L1Block predeploy and caches the latest block hash.
     function getTargetBlockHash(bytes calldata) external view returns (bytes32 targetBlockHash) {
         return IL1Block(l1BlockPredeploy).hash();
     }
