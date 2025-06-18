@@ -19,7 +19,6 @@
     "test": "yarn build && hardhat test"
   },
   "repository": "https://github.com/OffchainLabs/block-hash-prover-template/",
-  "author": "Henry <11198460+godzillaba@users.noreply.github.com>",
   "license": "MIT",
   "devDependencies": {
     "@eth-optimism/contracts": "^0.6.0",
