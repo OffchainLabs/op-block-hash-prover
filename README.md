@@ -13,6 +13,8 @@ The project includes:
 
 `// UNIMPLEMENTED` comments exist where the developer should add code to implement the provers, helpers and tests.
 
+[Arbitrum](https://github.com/OffchainLabs/arbitrum-block-hash-prover) and [OP](https://github.com/OffchainLabs/op-block-hash-prover) provers have been built as forks of this repository.
+
 ## Project Structure
 
 ### Contracts
