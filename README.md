@@ -1,6 +1,6 @@
 # Block Hash Prover Development Template
 
-This project provides starter code for developing [ERC-7888](https://github.com/ethereum/ERCs/pull/897) `IBlockHashProver` contracts and tooling.
+This project provides starter code for developing [ERC-7888](https://eips.ethereum.org/EIPS/eip-7888) `IBlockHashProver` contracts and tooling.
 
 Each rollup stack will have a unique implementation of these prover contracts and tooling. Customized forks of rollup stacks may have their own distinct implementations as well.
 
