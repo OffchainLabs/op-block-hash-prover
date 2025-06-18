@@ -1,6 +1,6 @@
 # Block Hash Prover Development Template
 
-This project provides starter code for developing [ERC-7888](https://github.com/ethereum/ERCs/pull/897) `IBlockHashProver` contracts and tooling.
+This project provides starter code for developing [ERC-7888](https://eips.ethereum.org/EIPS/eip-7888) `IBlockHashProver` contracts and tooling.
 
 Each rollup stack will have a unique implementation of these prover contracts and tooling. Customized forks of rollup stacks may have their own distinct implementations as well.
 
@@ -12,6 +12,8 @@ The project includes:
 - Basic tests for the prover contracts and helpers.
 
 `// UNIMPLEMENTED` comments exist where the developer should add code to implement the provers, helpers and tests.
+
+[Arbitrum](https://github.com/OffchainLabs/arbitrum-block-hash-prover) and [OP](https://github.com/OffchainLabs/op-block-hash-prover) provers have been built as forks of this repository.
 
 ## Project Structure
 
