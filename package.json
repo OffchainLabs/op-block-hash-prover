@@ -1,5 +1,5 @@
 {
-  "name": "block-hash-prover-template",
+  "name": "op-block-hash-prover",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,8 +18,7 @@
     "clean": "hardhat clean && rm -rf wagmi && rm -rf dist",
     "test": "yarn build && hardhat test"
   },
-  "repository": "https://github.com/OffchainLabs/block-hash-prover-template/",
-  "author": "Henry <11198460+godzillaba@users.noreply.github.com>",
+  "repository": "https://github.com/OffchainLabs/op-block-hash-prover/",
   "license": "MIT",
   "devDependencies": {
     "@eth-optimism/contracts": "^0.6.0",
